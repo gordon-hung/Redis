@@ -35,5 +35,25 @@ namespace Redis.Library
                 return Configuration.GetSection("RedisConnection").Get<string>();
             }
         }
+        /// <summary>
+        /// Redis 資料庫。
+        /// </summary>
+        public static int RedisDatabase
+        {
+            get
+            {
+                return Configuration.GetSection("RedisDatabase").Get<int>();
+            }
+        }
+        /// <summary>
+        /// Redis 存活時間。
+        /// </summary>
+        public static int RedisTimeSpan
+        {
+            get
+            {
+                return Configuration.GetSection("RedisTimeSpan").Get<int>();
+            }
+        }
     }
 }

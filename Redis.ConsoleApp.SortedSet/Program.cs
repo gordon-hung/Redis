@@ -6,21 +6,21 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Redis.ConsoleApp.Hash
+namespace Redis.ConsoleApp.SortedSet
 {
     /// <summary>
     /// Author: Gordon
-    /// Created: 2019-10-17
-    /// Description: Redis Hash Console Example
+    /// Created: 2019-10-18
+    /// Description: Redis SortedSet Console Example
     /// </summary>
-    class Program
+    static class Program
     {
         private static int Count = 10;
         private static RedisConnectionFactory redisConnectionFactory = new RedisConnectionFactory(Config.RedisConnection);
         private static IDatabase redis_db = redisConnectionFactory.GetConnection.GetDatabase(Config.RedisDatabase);
         private static TimeSpan redis_timeSpan = new TimeSpan(hours: 0, minutes: 0, seconds: Config.RedisTimeSpan);
-        private static RedisKey redis_key = "testHash";
-        private static List<HashEntry> hashEntry = new List<HashEntry>();
+        private static RedisKey redis_key = "testSortedSet";
+        private static Dictionary<long, string> dictionarys = new Dictionary<long, string>();
         private static SnowflakeIdGenerator snowflakeIdGenerator = new SnowflakeIdGenerator(1, 1);
         private static bool isRun = true;
 
@@ -44,7 +44,6 @@ namespace Redis.ConsoleApp.Hash
                     ExecuteRedis();
                 }
             }
-
         }
 
         /// <summary>
@@ -54,7 +53,7 @@ namespace Redis.ConsoleApp.Hash
         {
             for (int i = 0; i < Count; i++)
             {
-                hashEntry.Add(new HashEntry(snowflakeIdGenerator.nextId(), Guid.NewGuid().ToString()));
+                dictionarys.Add(snowflakeIdGenerator.nextId() % 1000000000000000, Guid.NewGuid().ToString());
             }
 
             if (redis_db.KeyExists(redis_key))
@@ -68,9 +67,8 @@ namespace Redis.ConsoleApp.Hash
                 Console.WriteLine(redis_key.ToString() + " is not exists");
             }
 
-
             Console.WriteLine("Add Rediskey Data...");
-            redis_db.HashSet(redis_key, hashEntry.ToArray());
+            dictionarys.ToList().ForEach(item => redis_db.SortedSetAdd(redis_key, item.Value, item.Key));
 
             Console.WriteLine("Rediskey Set TimeSpan...");
             if (redis_db.KeyExists(redis_key))
@@ -79,22 +77,23 @@ namespace Redis.ConsoleApp.Hash
             }
             else
             {
-                Console.WriteLine(redis_key.ToString() + " is not exists");
+                Console.WriteLine(redis_key.ToString() + " is not exists....");
             }
 
             Console.WriteLine("GetMany Rediskey...");
-            redis_db.HashGetAll(redis_key).ToList().ForEach(item => Console.WriteLine("Show " + redis_key.ToString() + " " + item));
+            redis_db.SortedSetRangeByRank(redis_key).ToList().ForEach(item => Console.WriteLine("Show " + redis_key.ToString() + " " + item));
 
             Console.WriteLine("Update Rediskey Value ...");
-            hashEntry.ForEach(item =>
-           {
-               string value = item.Value;
-               value += ":" + UnixTimestamp.ConvertToTimestamp(DateTime.Now);
-               redis_db.HashSet(redis_key, hashField: item.Name, value);
-           });
+            dictionarys.ToList().ForEach(item =>
+            {
+                string value = item.Value;
+                value += ":" + UnixTimestamp.ConvertToTimestamp(DateTime.Now);
+                redis_db.SortedSetRemove(redis_key, item.Value);
+                redis_db.SortedSetAdd(redis_key, value, item.Key);
+            });
 
             Console.WriteLine("GetMany Rediskey...");
-            redis_db.HashGetAll(redis_key).ToList().ForEach(item => Console.WriteLine("Show " + redis_key.ToString() + " " + item));
+            redis_db.SortedSetRangeByRank(redis_key).ToList().ForEach(item => Console.WriteLine("Show " + redis_key.ToString() + " " + item));
 
             Console.WriteLine("Get Rediskey TimeSpan ...");
             var redis_endPoint = redisConnectionFactory.GetConnection.GetEndPoints().First();
@@ -103,8 +102,9 @@ namespace Redis.ConsoleApp.Hash
             var redis_expire = redis_time == null ? (DateTime?)null : redis_server.Time().ToUniversalTime().Add(redis_time.Value); //返回UTC時間。
             Console.WriteLine(redis_key.ToString() + "->TimeSpan:" + redis_time + ";Expire date:" + redis_expire);
 
-            Console.WriteLine("Delte Rediskey Content...");
-            redis_db.HashGetAll(redis_key).ToList().ForEach(item => redis_db.HashDelete(redis_key, hashField: item.Value));
+            Console.WriteLine("Remove Rediskey Content...");
+            var Member = redis_db.SortedSetRangeByScoreWithScores(redis_key);
+            redis_db.SortedSetRemoveRangeByScore(redis_key, Member.ToList().First().Score, Member.ToList()[Member.Count() - 2].Score);
 
             if (redis_db.KeyExists(redis_key))
             {
@@ -117,5 +117,6 @@ namespace Redis.ConsoleApp.Hash
                 Console.WriteLine(redis_key.ToString() + " is not exists");
             }
         }
+
     }
 }

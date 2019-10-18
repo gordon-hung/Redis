@@ -9,9 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Redis.ConsoleApp.String", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Redis.ConsoleApp.Hash", "Redis.ConsoleApp.Hash\Redis.ConsoleApp.Hash.csproj", "{42273DA3-355B-4619-BC53-713CB00BB469}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Redis.Library", "Redis.Library\Redis.Library.csproj", "{3180A91F-F508-475C-A285-97D5D69ED92B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Redis.Library", "Redis.Library\Redis.Library.csproj", "{3180A91F-F508-475C-A285-97D5D69ED92B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Redis.ConsoleApp.Set", "Redis.ConsoleApp.Set\Redis.ConsoleApp.Set.csproj", "{75F4C882-C205-4198-90D3-BBEE05BB7000}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Redis.ConsoleApp.Set", "Redis.ConsoleApp.Set\Redis.ConsoleApp.Set.csproj", "{75F4C882-C205-4198-90D3-BBEE05BB7000}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Redis.ConsoleApp.SortedSet", "Redis.ConsoleApp.SortedSet\Redis.ConsoleApp.SortedSet.csproj", "{A2D9F0C6-F922-4227-A9F6-B3B8ED9FEAC3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{75F4C882-C205-4198-90D3-BBEE05BB7000}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{75F4C882-C205-4198-90D3-BBEE05BB7000}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{75F4C882-C205-4198-90D3-BBEE05BB7000}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2D9F0C6-F922-4227-A9F6-B3B8ED9FEAC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2D9F0C6-F922-4227-A9F6-B3B8ED9FEAC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2D9F0C6-F922-4227-A9F6-B3B8ED9FEAC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2D9F0C6-F922-4227-A9F6-B3B8ED9FEAC3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
